@@ -6,7 +6,7 @@ services:
     build: ${version}
     environment:
       - VT_DEBUG=true
-      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=vtiger
     ports:
       - 20080:80
       - 20443:443
@@ -21,7 +21,7 @@ services:
     image: javanile/adminer
     environment:
       - MYSQL_DATABASE=vtiger
-      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=vtiger
     ports:
       - 20081:8080
     links:
@@ -30,7 +30,7 @@ services:
   mysql:
     image: mysql:5.5
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=vtiger
     volumes:
       - mysql:/var/lib/mysql:rw
       - ./:/vtiger:rw
