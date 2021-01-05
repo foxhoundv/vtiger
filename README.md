@@ -8,7 +8,8 @@ improve marketing reach, and deliver great customer service. Try it free with Do
 [![StyleCI](https://github.styleci.io/repos/118489407/shield?branch=master)](https://github.styleci.io/repos/118489407)
 
 ## Supported tags and respective `Dockerfile` links
-* [`7.2.0`, `7.2`, `7`, `latest` (7.2.0/Dockerfile)](https://github.com/javanile/vtiger/blob/master/7.2.0/Dockerfile)
+* [`7.3.0`, `7.3`, `7`, `latest` (7.3.0/Dockerfile)](https://github.com/foxhoundv/vtiger/blob/master/7.3.0/Dockerfile)
+* [`7.2.0`, `7.2` (7.2.0/Dockerfile)](https://github.com/javanile/vtiger/blob/master/7.2.0/Dockerfile)
 * [`7.1.0`, `7.1` (7.1.0/Dockerfile)](https://github.com/javanile/vtiger/blob/master/7.1.0/Dockerfile)
 * [`7.1.0-RC` (7.1.0-RC/Dockerfile)](https://github.com/javanile/vtiger/blob/master/7.1.0-RC/Dockerfile)
 * [`7.0.1`, `7.0` (7.0.1/Dockerfile)](https://github.com/javanile/vtiger/blob/master/7.0.1/Dockerfile)
@@ -41,6 +42,7 @@ improve marketing reach, and deliver great customer service. Try it free with Do
 
 | Vtiger CRM                                                                                       | PHP      |
 |--------------------------------------------------------------------------------------------------|----------|
+| `7.3.0`                                                                                          | `7.3.12` |
 | `7.2.0`                                                                                          | `7.3.12` |
 | `7.1.0` `7.1.0-RC` `7.0.1` `7.0.0`                                                               | `7.0.33` |
 | `6.5.0` `6.4.0` `6.3.0` `6.2.0` `6.1.0` `6.1.0-Beta` `6.0.0` `6.0.0-RC` `6.0.0-Beta`             | `5.6.40` |
