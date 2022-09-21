@@ -30,19 +30,11 @@ service apache2 start >/dev/null 2>&1
 printenv | sed 's/^\(.*\)$/export \1/g' | grep -E '^export MYSQL_|^export VT_' > /run/crond.env
 
 ## import database using environment variables
-if [[ -n "${VT_INSTALL}" ]]; then
-  cd /usr/src/vtiger
-  loading "Waiting for database..."
-  echo "[vtiger] Waiting for available database..."
-  echo -n "[vtiger] " && mysql-import --do-while vtiger.sql
-  #php vtiger-startup.php
-
-  ## Remove default config.inc.php if VT_INSTALL is false
-  if [[ ! -f /var/www/html/config.inc.php ]]; then
-    echo "[vtiger] Create configuration files..."
-    cp config.inc.php /var/www/html/config.inc.php
-  fi
-fi
+cd /usr/src/vtiger
+loading "Waiting for database..."
+echo "[vtiger] Waiting for available database..."
+echo -n "[vtiger] " && mysql-import --do-while vtiger.sql
+#php vtiger-startup.php
 
 ## fill current mounted volume
 loading "Waiting for volume preparation..."
