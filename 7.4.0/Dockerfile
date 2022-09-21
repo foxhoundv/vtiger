@@ -35,7 +35,7 @@ RUN apt-get update && \
     mkdir -p volume /var/lib/vtiger && \
     apt-get clean && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
-COPY ./develop-install.sh /usr/local/bin/
+COPY develop-install.sh /usr/local/bin/
 RUN develop-install.sh
 
 
