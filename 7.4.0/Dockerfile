@@ -40,7 +40,7 @@ RUN develop-install.sh
 
 RUN service mariadb start
 
-CMD mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
+RUN mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
     ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; \
     CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger'; \
     UPDATE mysql.user SET password = PASSWORD('vtiger') WHERE user = 'vtiger'; \
