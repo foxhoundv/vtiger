@@ -35,28 +35,14 @@ RUN apt-get update && \
     mkdir -p volume /var/lib/vtiger && \
     apt-get clean && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
-COPY develop-install.sh /usr/local/bin/
-RUN develop-install.sh
-
-RUN service mariadb start
-
-CMD mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
-    ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; \
-    CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger'; \
-    UPDATE mysql.user SET password = PASSWORD('vtiger') WHERE user = 'vtiger'; \
-    GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; \
-    FLUSH PRIVILEGES;"
-
-RUN service mariadb stop
-RUN echo "[mysqld]" >> /etc/mysql/my.cnf
-RUN echo "sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
-RUN service mariadb start
+#COPY develop-install.sh /usr/local/bin/
+#RUN develop-install.sh
 
 COPY vtiger-*.sh /usr/local/bin/
 COPY vtiger-*.php /usr/src/vtiger/
 
-#RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
-RUN cd /var/www/html/vtlib/Vtiger/ && \
+RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
+    cd /var/www/html/vtlib/Vtiger/ && \
     sed -e 's!realpath(!__realpath__(!' -ri Utils.php Deprecated.php && \
     symvol move /var/www/html /usr/src/vtiger/volume
 
