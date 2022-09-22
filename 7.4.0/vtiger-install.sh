@@ -20,7 +20,7 @@ if [[ $@ == *'--install-mysql'* ]]; then
 
     apt-get install -y --no-install-recommends ${DATABASE_PACKAGE}
 
-    service mysql start
+    service mariadb start
 
     mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
                      ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; \
@@ -29,15 +29,15 @@ if [[ $@ == *'--install-mysql'* ]]; then
                      GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; \
                      FLUSH PRIVILEGES;"
 
-    service mysql stop >/dev/null 2>&1
+    service mariadb stop >/dev/null 2>&1
     echo "[mysqld]" >> /etc/mysql/my.cnf
     echo "sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
-    service mysql start
+    service mariadb start
 fi
 
 ## Assert MySQL
 if [[ $@ == *'--assert-mysql'* ]]; then
-    service mysql start
+    service mariadb start
     database=$(mysqlshow -uvtiger -pvtiger -hlocalhost vtiger | grep -v Wildcard | grep -o vtiger)
     if [[ "${database}" != "vtiger" ]]; then
         echo "[vtiger] install error '--install-mysql' database not found.";
@@ -68,7 +68,7 @@ fi
 
 ## Uninstall MySQL
 if [[ $@ == *'--remove-mysql'* ]]; then
-    service mysql stop
+    service mariadb stop
     killall -KILL mysql mysqld mysqld_safe && true
     apt-get --yes purge ^mysql.* ^mariadb.* && true
     apt-get --yes autoremove --purge && apt-get autoclean

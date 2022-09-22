@@ -1,4 +1,4 @@
-FROM php:8.1.1-apache
+FROM php:7.4-apache
 LABEL maintainer="Francesco Bianco <info@javanile.org>"
 
 ENV VT_VERSION="7.4.0" \
@@ -13,7 +13,7 @@ COPY 000-default.conf /etc/apache2/sites-available/
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y libzip-dev zlib1g-dev libc-client-dev libkrb5-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libxml2-dev cron rsyslog zip unzip socat vim nano && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ && \
     docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install imap exif mysqli pdo pdo_mysql zip gd xml && \
     echo "cron.* /var/log/cron.log" >> /etc/rsyslog.conf && rm -fr /etc/cron.* && mkdir /etc/cron.d && \
@@ -38,12 +38,25 @@ RUN apt-get update && \
 COPY develop-install.sh /usr/local/bin/
 RUN develop-install.sh
 
+RUN service mariadb start
+
+CMD mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
+    ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; \
+    CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger'; \
+    UPDATE mysql.user SET password = PASSWORD('vtiger') WHERE user = 'vtiger'; \
+    GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; \
+    FLUSH PRIVILEGES;"
+
+RUN service mariadb stop
+RUN echo "[mysqld]" >> /etc/mysql/my.cnf
+RUN echo "sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
+RUN service mariadb start
 
 COPY vtiger-*.sh /usr/local/bin/
 COPY vtiger-*.php /usr/src/vtiger/
 
-RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
-    cd /var/www/html/vtlib/Vtiger/ && \
+#RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
+RUN cd /var/www/html/vtlib/Vtiger/ && \
     sed -e 's!realpath(!__realpath__(!' -ri Utils.php Deprecated.php && \
     symvol move /var/www/html /usr/src/vtiger/volume
 
