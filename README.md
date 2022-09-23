@@ -54,3 +54,9 @@ improve marketing reach, and deliver great customer service. Try it free with Do
 ```bash
 ./develop.sh
 ```
+
+## Error reporting
+
+```ini
+error_reporting = E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT
+```

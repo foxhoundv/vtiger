@@ -4,7 +4,8 @@ LABEL maintainer="Francesco Bianco <info@javanile.org>"
 ENV LAYER_BREAK=true
 ENV VT_VERSION="%%VT_VERSION%%" \
     DATABASE_PACKAGE="%%DATABASE_PACKAGE%%" \
-    PATH="/root/.composer/vendor/bin:$PATH"
+    COMPOSER_HOME=/usr/src/vtiger \
+    PATH="/usr/src/vtiger/vendor/bin:$PATH"
 
 COPY php.ini /usr/local/etc/php/
 COPY vtiger.json .symvol /usr/src/vtiger/
@@ -36,8 +37,10 @@ RUN cd /usr/src/vtiger && \
 RUN apt-get clean && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 ## @block: develop
-#COPY develop-install.sh /usr/local/bin/
-#RUN develop-install.sh
+COPY develop-install.sh /usr/local/bin/
+RUN develop-install.sh
+
+
 #COPY vtiger-install.sh /usr/local/bin/
 #COPY vtiger-install.php /usr/src/vtiger/
 ## @block: release
@@ -56,8 +59,9 @@ RUN cd /var/www/html/vtlib/Vtiger/ && \
     sed -e 's!realpath(!__realpath__(!' -ri Utils.php Deprecated.php && \
     symvol move /var/www/html /usr/src/vtiger/volume
 
+COPY config.inc.php /usr/src/vtiger/
 COPY LoggerManager.php /var/www/html/libraries/log4php/
-COPY config.inc.php config.performance.php loading.php /var/www/html/
+COPY config.performance.php health.php loading.php  /var/www/html/
 COPY crontab /etc/
 
 VOLUME ["/var/lib/vtiger"]
@@ -68,6 +72,8 @@ ENV VT_ADMIN_USER="admin" \
     VT_ADMIN_PASSWORD="admin" \
     VT_ADMIN_EMAIL="admin@localhost.lan" \
     VT_CURRENCY_NAME="USA, Dollars" \
+    VT_SCHEDULER=1 \
+    VT_INSTALL=1 \
     MYSQL_HOST="mysql" \
     MYSQL_DATABASE="vtiger"
 

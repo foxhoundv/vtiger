@@ -3,7 +3,8 @@ LABEL maintainer="Francesco Bianco <info@javanile.org>"
 
 ENV VT_VERSION="7.1.0-RC" \
     DATABASE_PACKAGE="mariadb-server-10.1" \
-    PATH="/root/.composer/vendor/bin:$PATH"
+    COMPOSER_HOME=/usr/src/vtiger \
+    PATH="/usr/src/vtiger/vendor/bin:$PATH"
 
 COPY php.ini /usr/local/etc/php/
 COPY vtiger.json .symvol /usr/src/vtiger/
@@ -34,6 +35,10 @@ RUN apt-get update && \
     mkdir -p volume /var/lib/vtiger && \
     apt-get clean && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
+COPY develop-install.sh /usr/local/bin/
+RUN develop-install.sh
+
+
 COPY vtiger-*.sh /usr/local/bin/
 COPY vtiger-*.php /usr/src/vtiger/
 
@@ -42,8 +47,9 @@ RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
     sed -e 's!realpath(!__realpath__(!' -ri Utils.php Deprecated.php && \
     symvol move /var/www/html /usr/src/vtiger/volume
 
+COPY config.inc.php /usr/src/vtiger/
 COPY LoggerManager.php /var/www/html/libraries/log4php/
-COPY config.inc.php config.performance.php loading.php /var/www/html/
+COPY config.performance.php health.php loading.php  /var/www/html/
 COPY crontab /etc/
 
 VOLUME ["/var/lib/vtiger"]
@@ -54,6 +60,8 @@ ENV VT_ADMIN_USER="admin" \
     VT_ADMIN_PASSWORD="admin" \
     VT_ADMIN_EMAIL="admin@localhost.lan" \
     VT_CURRENCY_NAME="USA, Dollars" \
+    VT_SCHEDULER=1 \
+    VT_INSTALL=1 \
     MYSQL_HOST="mysql" \
     MYSQL_DATABASE="vtiger"
 

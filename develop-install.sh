@@ -10,16 +10,25 @@ echo "${DATABASE_PACKAGE} mysql-server/root_password_again password root" | debc
 
 apt-get install -y --no-install-recommends ${DATABASE_PACKAGE}
 
-service mysql start
+echo "==> Database start..."
+service mysql start && true
+service mariadb start && true
 
+echo "==> Database preparation..."
+export MYSQL_PWD=root
 mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; \
                  ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; \
-                 CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger'; \
-                 UPDATE mysql.user SET password = PASSWORD('vtiger') WHERE user = 'vtiger'; \
-                 GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; \
+                 CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger';"
+
+mysql -uroot -e "UPDATE mysql.user SET password = PASSWORD('vtiger') WHERE user = 'vtiger';" && true
+
+mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; \
                  FLUSH PRIVILEGES;"
 
-service mysql stop
+echo "==> Database restart..."
+service mysql stop && true
+service mariadb stop && true
 echo "[mysqld]" >> /etc/mysql/my.cnf
 echo "sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
-service mysql start
+service mysql start && true
+service mariadb start && true
