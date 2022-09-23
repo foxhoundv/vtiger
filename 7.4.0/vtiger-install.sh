@@ -24,10 +24,10 @@ if [[ $@ == *'--install-mysql'* ]]; then
 
     mysql -uroot -e "CREATE DATABASE IF NOT EXISTS vtiger; ALTER DATABASE vtiger CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE USER 'vtiger'@'%' IDENTIFIED BY 'vtiger'; GRANT ALL PRIVILEGES ON *.* TO 'vtiger'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
-    service mariadb stop >/dev/null 2>&1
+    service mariadb stop > /dev/null 2>&1
     echo "[mysqld]" >> /etc/mysql/my.cnf
     echo "sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" >> /etc/mysql/my.cnf
-    service mariadb start
+    ## service mariadb start
 fi
 
 ## Assert MySQL

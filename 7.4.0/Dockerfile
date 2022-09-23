@@ -41,8 +41,10 @@ RUN apt-get update && \
 COPY vtiger-*.sh /usr/local/bin/
 COPY vtiger-*.php /usr/src/vtiger/
 
-RUN vtiger-install.sh --install-mysql --assert-mysql --dump --remove-mysql && \
-    cd /var/www/html/vtlib/Vtiger/ && \
+RUN mkdir -p /var/lib/vtiger/logs
+
+RUN vtiger-install.sh --install-mysql --dump --remove-mysql && \
+    cd /var/www/html/vtlib/vtiger/ && \
     sed -e 's!realpath(!__realpath__(!' -ri Utils.php Deprecated.php && \
     symvol move /var/www/html /usr/src/vtiger/volume
 
